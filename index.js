@@ -89,17 +89,33 @@
             miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].title} - ${divisa}${miItem[0].precio}`;
 
             const miBoton = document.createElement('button');
-            miBoton.classList.add('btn' , 'btn-danger', 'mx-5', 'position-relative');
-            miBoton.textContent = 'X';
+            miBoton.classList.add('btn' , 'btn-danger', 'mx-2', 'position-relative');
+            miBoton.textContent = '-';
             miBoton.style.marginLeft = '1rem';
             miBoton.dataset.item = item;
             miBoton.addEventListener('click', borrarItemCarrito);
 
+            const miBotonComprar = document.createElement('button');
+            miBotonComprar.classList.add('btn' , 'btn-primary' , 'mx-2', 'position-relative');
+            miBotonComprar.textContent = '+';
+            miBotonComprar.style.marginLeft = '1rem';
+            miBotonComprar.dataset.item = item;
+            miBotonComprar.addEventListener('click', agregarItemCarrito);
+            miNodo.appendChild(miBotonComprar);
             miNodo.appendChild(miBoton);
             DOMcarrito.appendChild(miNodo)
         });
 
         DOMtotal.textContent = calcularTotal();
+    }
+
+    function agregarItemCarrito(evento) {
+        const id = evento.target.dataset.item;
+        carrito = carrito.join((carritoId) => {
+            return carritoId !== id;
+        });
+        renderizarCarrito();
+        guardarCarritoEnElLocalStorage();
     }
 
     function borrarItemCarrito(evento) {

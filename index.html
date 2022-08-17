@@ -106,11 +106,22 @@
             class="product-list container-fluid d-flex align-items-center align-self-center col-12 col-md-12 text-center flex-wrap violeta gap-3  ps-4 mt-5">
         </section>
 
-        <article><ul id="carrito" class="list-group"></ul>
+        <hr>
 
-            <p class="text-right">Total: <span id="total"></span>&euro;</p>
-                <button id="boton-vaciar" class="btn btn-danger">Vaciar</button>
-</article>
+        <article class="ps-4 bg-white pt-3 text-center">
+            
+            <div class="d-flex justify-content-center">
+                <h3 class="ps-3 fs-1 fw-bold col-6">Carrito de compras</h3>
+                    <div class="col-6">
+                        <button class="btn btn-primary ms-3">Comprar carrito</button>
+                        <button id="boton-vaciar" class="btn btn-danger ms-3">Vaciar carrito</button>
+                    </div>
+            </div>
+            <ul id="carrito" class="list-group container-fluid mt-3"></ul>
+                <div>
+                    <p class="text-center fw-bold fs-1 py-3">Total: <span id="total"></span></p>
+                </div>
+        </article>
 
     </main>
 
