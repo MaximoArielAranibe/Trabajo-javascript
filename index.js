@@ -86,10 +86,10 @@
 
             const miNodo = document.createElement('li');
             miNodo.classList.add('list-group-item', 'text-right' , 'mx-2');
-            miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].title} - ${miItem[0].precio}${divisa}`;
+            miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].title} - ${divisa}${miItem[0].precio}`;
 
             const miBoton = document.createElement('button');
-            miBoton.classList.add('btn' , 'btn-danger', 'mx-5');
+            miBoton.classList.add('btn' , 'btn-danger', 'mx-5', 'position-relative');
             miBoton.textContent = 'X';
             miBoton.style.marginLeft = '1rem';
             miBoton.dataset.item = item;
