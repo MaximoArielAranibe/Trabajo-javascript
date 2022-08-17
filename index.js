@@ -1,40 +1,27 @@
+    document.addEventListener('DOMContentLoaded', () => {
 
-let carrito = [];
-let arrayProductos = [];
-const signo = '$';
-const DOMcarrito = document.querySelector('#carrito');
-const changeMode = document.querySelector('body');
-const toggle = document.getElementById('toggle');
-const lista = document.querySelector('#lista');
-const miLocalStorage = window.localStorage; //Global
-const openModal = document.querySelector('#carrito');
-const modal = document.querySelector('.modal');
-const closeModal = document.querySelector('.modal__close');
-const DOMtotal = document.querySelector('#total');
-const openModalVaciar = document.querySelector('#boton-vaciar');
-
-
-/* Change theme */
-toggle.onclick = function(){
+        const changeMode = document.querySelector('body');
+    const toggle = document.getElementById('toggle');
+    /* Change theme */
+    toggle.onclick = function(){
     toggle.classList.toggle('active');
-    body.classList.toggle('active');
-}
+    changeMode.classList.toggle('active');
+    }
+
+        let carrito = [];
+        const divisa = '$';
+        const DOMitems = document.querySelector('#items');
+        const DOMcarrito = document.querySelector('#carrito');
+        const DOMtotal = document.querySelector('#total');
+        const DOMbotonVaciar = document.querySelector('#boton-vaciar')
+        const miLocalStorage = window.localStorage;
 
 
-openModal.addEventListener('click', (e) => {
-    e.preventDefault();
-    modal.classList.add('modal--show');
-})
-
-closeModal.addEventListener('click', (e) =>{
-    e.preventDefault();
-    modal.classList.remove('modal--show');
-});
-
-//LLAMADO A API.JSON
-/* fetch('api.json')
-.then(respuesta => respuesta.json()) */
-function renderizarProductos(){
+    
+    //LLAMADO A API.JSON
+    /* fetch('api.json')
+    .then(respuesta => respuesta.json()) */
+    function renderizarProductos(){
     baseDeDatos.forEach((producto) => {
     //MiNodo es el div completo de la card
     const miNodo = document.createElement('div');
@@ -54,7 +41,7 @@ function renderizarProductos(){
     //Precio del producto
     const miNodoPrecio = document.createElement('p');
     miNodoPrecio.classList.add('fs-4', 'mt-3' , 'fw-bold' , 'text-dark');
-    miNodoPrecio.textContent = `${signo}${producto.precio}`;
+    miNodoPrecio.textContent = `${divisa}${producto.precio}`;
     //Div de los buttons
     const miNodoDivButtons = document.createElement('div');
     miNodoDivButtons.classList.add('d-grid' , 'gap-3');
@@ -65,7 +52,7 @@ function renderizarProductos(){
     //Button carrito
     const miNodoButtonCarrito = document.createElement('button');
     miNodoButtonCarrito.setAttribute('marcador' , producto.id);
-    miNodoButtonCarrito.classList.add('btn' , 'btn-primary' , 'btn-lg' , 'text-light' , 'fw-bold' , 'hero__cta');
+    miNodoButtonCarrito.classList.add('btn' , 'btn-primary' , 'btn-lg' , 'text-light' , 'fw-bold');
     miNodoButtonCarrito.textContent = 'Añadir al carrito';
     miNodoButtonCarrito.addEventListener('click', anyadirProductoAlCarrito);
     /* miNodoButtonCarrito.addEventListener('click', añadirAlCarrito); */
@@ -75,82 +62,90 @@ function renderizarProductos(){
     miNodo.appendChild(miNodoDivButtons);
     miNodoDivButtons.appendChild(miNodoButtonComprar);
     miNodoDivButtons.appendChild(miNodoButtonCarrito);
-    lista.appendChild(miNodo);
-    })
-}
-//Pintar CARDS
+    DOMitems.appendChild(miNodo);
+        })
+    }
 
-function anyadirProductoAlCarrito(evento){
-    carrito.push(evento.target.getAttribute('marcador'));
-    renderizarCarrito();
-    guardarCarritoEnLocalStorage();
-}
+    function anyadirProductoAlCarrito(evento) {
+        carrito.push(evento.target.getAttribute('marcador'))
+        renderizarCarrito();
+        guardarCarritoEnElLocalStorage();
+    }
 
-function renderizarCarrito() {
-    DOMcarrito.textContent = '';
-    const carritoSinDuplicados = [... new Set(carrito)];
-    carritoSinDuplicados.forEach((item) => {
-        const miItem = baseDeDatos.filter((itemBaseDeDatos) => {
-            return itemBaseDeDatos.id === parseInt(item);
+    function renderizarCarrito() {
+        DOMcarrito.textContent = '';
+        const carritoSinDuplicados = [... new Set(carrito)];
+        carritoSinDuplicados.forEach((item) => {
+            const miItem = baseDeDatos.filter((itemBaseDeDatos)=> {
+                return itemBaseDeDatos.id === parseInt(item);
             });
-        const numeroUnidadesItem = carrito.reduce((total,itemId) => {
-            return itemId === item ? total += 1 : total;
-        }, 0);
-        const openModalVaciar = document.querySelector('#boton-vaciar');
-        openModalVaciar.textContent = 'X22';
-        openModalVaciar.textContent = `${numeroUnidadesItem} x ${miItem[0].precio} ${signo}`;
-        
-        //Boton de borrar
-        openModalVaciar.dataset.item = item;
-        openModalVaciar.addEventListener('click', borrarItemCarrito);
-        openModalVaciar.appendChild(DOMtotal);
+            
+            const numeroUnidadesItem = carrito.reduce((total , itemId) => {
+                return itemId === item ? total += 1 : total;
+            }, 0);
+
+            const miNodo = document.createElement('li');
+            miNodo.classList.add('list-group-item', 'text-right' , 'mx-2');
+            miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].title} - ${miItem[0].precio}${divisa}`;
+
+            const miBoton = document.createElement('button');
+            miBoton.classList.add('btn' , 'btn-danger', 'mx-5');
+            miBoton.textContent = 'X';
+            miBoton.style.marginLeft = '1rem';
+            miBoton.dataset.item = item;
+            miBoton.addEventListener('click', borrarItemCarrito);
+
+            miNodo.appendChild(miBoton);
+            DOMcarrito.appendChild(miNodo)
         });
+
         DOMtotal.textContent = calcularTotal();
     }
 
-
-function borrarItemCarrito(evento) {
-    const id = evento.target.dataset.item;
-    carrito = carrito.filter((carritoId) => {
-        return carritoId !== id;
-    });
-    renderizarCarrito();
-    guardarCarritoEnLocalStorage();
-}
-
-
-function calcularTotal() {
-    return carrito.reduce((total,item) => {
-        const miItem = baseDeDatos.filter((itemBaseDeDatos) => {
-            return itemBaseDeDatos.id === parseInt(item);
+    function borrarItemCarrito(evento) {
+        const id = evento.target.dataset.item;
+        carrito = carrito.filter((carritoId) => {
+            return carritoId !== id;
         });
-        return total + miItem[0].precio;
-    },0).toFixed(2);
-}
-
-function vaciarCarrito() {
-    carrito = [];
-    renderizarCarrito();
-    localStorage.clear();
-}
-
-function guardarCarritoEnLocalStorage () {
-    miLocalStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
-function cargarCarritoDeLocalStorage () {
-    // ¿Existe un carrito previo guardado en LocalStorage?
-    if (miLocalStorage.getItem('carrito') !== null) {
-        // Carga la información
-        carrito = JSON.parse(miLocalStorage.getItem('carrito'));
+        renderizarCarrito();
+        guardarCarritoEnElLocalStorage();
     }
-}
 
-openModalVaciar.addEventListener('click', vaciarCarrito);
+    function calcularTotal(){
+        return carrito.reduce((total, item)=>{
+            const miItem = baseDeDatos.filter((itemBaseDeDatos) => {
+                return itemBaseDeDatos.id === parseInt(item);
+            });
+            return total + miItem[0].precio;
+        }, 0).toFixed(2);
+    }
 
-cargarCarritoDeLocalStorage();
-renderizarCarrito();
-renderizarProductos();
+    function vaciarCarrito() {
+        carrito = [];
+        renderizarCarrito();
+        localStorage.clear;
+    }
+
+    function guardarCarritoEnElLocalStorage() {
+        miLocalStorage.setItem('carrito', JSON.stringify(carrito));
+    }
+
+    function cargarCarritoDeLocalStorage () {
+        if (miLocalStorage.getItem('carrito') !== null) {
+            carrito = JSON.parse(miLocalStorage.getItem('carrito'));
+        }
+    }
+
+    // Eventos
+    DOMbotonVaciar.addEventListener('click', vaciarCarrito);
+
+    // Inicio
+    cargarCarritoDeLocalStorage();
+    renderizarProductos();
+    renderizarCarrito();
+});
+
+//Pintar CARDS
 /*             const agregarAlCarrito = (prodId) => {
                 const item = productos.find((prod) => prod.id === prodID)
                 carrito.push(item)
