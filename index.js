@@ -3,6 +3,10 @@
     const changeMode = document.querySelector('body');
     const toggle = document.getElementById('toggle');
     
+        const carritoValue = document.getElementById('carritoAmount');
+        var carritoAmmount = 0;
+        carritoValue.innerHTML = carritoAmmount;
+
     toggle.onclick = function(){
         toggle.classList.toggle('active');
         changeMode.classList.toggle('active');
@@ -18,13 +22,20 @@
         const miLocalStorage = window.localStorage;
 
 
+        async function fetchData () {
+            const data = await fetch ('api.json');
+            const dataJSON = await data.json();
+            console.log(dataJSON);
+            return dataJSON;
+        }
     
     //LLAMADO A API.JSON
     /* fetch('api.json')
     .then(respuesta => respuesta.json()) */
-    function renderizarProductos(){
-    baseDeDatos.forEach((producto) => {
-    //MiNodo es el div completo de la card
+    async function renderizarProductos(){
+        const data = await fetchData();
+        data.forEach(producto => {
+            //MiNodo es el div completo de la card
     const miNodo = document.createElement('div');
     miNodo.classList.add('card' , 'bg-light' , 'ms-2' , 'px-3' ,'py-2');
     miNodo.style.width= "350px";//Agrego altura y ancho fijo
@@ -64,12 +75,14 @@
     miNodoDivButtons.appendChild(miNodoButtonComprar);
     miNodoDivButtons.appendChild(miNodoButtonCarrito);
     DOMitems.appendChild(miNodo);
-        })
-    }
+        })};
+    
 
     function anyadirProductoAlCarrito(evento) {
         carrito.push(evento.target.getAttribute('marcador'))
         renderizarCarrito();
+        carritoAmmount++;
+        carritoValue.innerHTML = carritoAmmount;
         guardarCarritoEnElLocalStorage();
     }
 
@@ -87,6 +100,7 @@
 
             const miNodo = document.createElement('li');
             miNodo.classList.add('list-group-item', 'text-right' , 'mx-2');
+            miNodo.getAttribute('marcador');
             miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].title} - ${divisa}${miItem[0].precio}`;
 
             const miBoton = document.createElement('button');
