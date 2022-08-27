@@ -1,11 +1,11 @@
     document.addEventListener('DOMContentLoaded', () => {
-
-        const changeMode = document.querySelector('body');
+        /* Change theme */
+    const changeMode = document.querySelector('body');
     const toggle = document.getElementById('toggle');
-    /* Change theme */
+    
     toggle.onclick = function(){
-    toggle.classList.toggle('active');
-    changeMode.classList.toggle('active');
+        toggle.classList.toggle('active');
+        changeMode.classList.toggle('active');
     }
 
         let carrito = [];
@@ -13,7 +13,8 @@
         const DOMitems = document.querySelector('#items');
         const DOMcarrito = document.querySelector('#carrito');
         const DOMtotal = document.querySelector('#total');
-        const DOMbotonVaciar = document.querySelector('#boton-vaciar')
+        const DOMbotonVaciar = document.querySelector('#boton-vaciar');
+        const DOMbotonComprar = document.querySelector('#boton-comprar');
         const miLocalStorage = window.localStorage;
 
 
@@ -111,8 +112,8 @@
 
     function agregarItemCarrito(evento) {
         const id = evento.target.dataset.item;
-        carrito = carrito.join((carritoId) => {
-            return carritoId !== id;
+        carrito = carrito.push((carritoId) => {
+            return carritoId === id;
         });
         renderizarCarrito();
         guardarCarritoEnElLocalStorage();
@@ -154,12 +155,14 @@
 
     // Eventos
     DOMbotonVaciar.addEventListener('click', vaciarCarrito);
+    DOMbotonComprar.addEventListener('click', anyadirProductoAlCarrito);
 
     // Inicio
     cargarCarritoDeLocalStorage();
     renderizarProductos();
     renderizarCarrito();
 });
+
 
 //Pintar CARDS
 /*             const agregarAlCarrito = (prodId) => {
